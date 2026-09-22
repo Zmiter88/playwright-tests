@@ -19,6 +19,7 @@ test.describe("Sorting products", () => {
       const firstProduct = page.locator(".inventory_item_name").first();
 
       await expect(firstProduct).toHaveText(sortCase.expectedFirstProduct);
+      await expect(firstProduct).toBeVisible();
     });
   }
 });
