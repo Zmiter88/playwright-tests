@@ -14,7 +14,7 @@ test.describe("Sorting products", () => {
 
   for (const sortCase of sortCases) {
     test(`sort - ${sortCase.option}`, async ({ page }) => {
-      await page.getByRole("combobox").selectOption(sortCase.option);
+      await page.getByRole('combobox').selectOption(sortCase.option);
 
       const firstProduct = page.locator(".inventory_item_name").first();
 

@@ -16,3 +16,10 @@ export const sortCases = [
         expectedFirstProduct: 'Sauce Labs Fleece Jacket'
     }
 ];
+
+export const sortingData = [
+    { sort: 'az', expectedFirst: 'Sauce Labs Backpack' },
+    { sort: 'za', expectedFirst: 'Test.allTheThings() T-Shirt (Red)' },
+    { sort: 'lohi', expectedFirst: 'Sauce Labs Onesie' },
+    { sort: 'hilo', expectedFirst: 'Sauce Labs Fleece Jacket' }
+];
