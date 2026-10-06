@@ -1,44 +1,35 @@
 import { test, expect } from "@playwright/test";
 import { validUser } from "../test-data/loginData";
 import { sortingData } from "../test-data/sortData";
+import { LoginPage } from "../pages/LoginPage";
+import { ProductsPage } from "../pages/ProductsPage";
+import { SideMenu } from "../pages/SideMenu";
+import { baseURL } from "../config/config";
 
 test.describe('Products sorting', () => {
     // logowanie
   test.beforeEach(async ({ page }) => {
-    await page.goto("https://www.saucedemo.com/");
-    await page.getByPlaceholder("Username").fill(validUser.username);
-    await page.getByPlaceholder("Password").fill(validUser.password);
-    await page.getByRole("button", { name: "Login" }).click();
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login(validUser.username, validUser.password);
     // sprawdzenie czy sie zalogował
     await expect(page).toHaveURL(validUser.expected);
     });
 
-    test(`Sorting`, async ({ page }) => {
-        // klikniecie sortowanie az
-        await page.getByRole('combobox', {name: 'Sort products'}).selectOption('az');
-        const firstProduct = page.locator('.inventory_item_name').first();
-        await expect(firstProduct).toHaveText('Sauce Labs Backpack');
-});
 
     test(`Logout`, async ({ page }) => {
-        // znalezienie przycisku Open menu
-        const openMenu = page.getByRole('button', {name: 'Open menu'});
-        // klikniecie w niego
-        await openMenu.click();
-        // znalezienie przycisku logout
-        const logoutButton = page.getByRole('button', {name: 'Logout'});
-        // wylogowanie sie
-        await logoutButton.click();
+        const sideMenu = new SideMenu(page);
+        await sideMenu.logout();
         // sprawdzenie czy sie wylogowalismy
-        await expect(page).toHaveURL('https://www.saucedemo.com/');
+        await expect(page).toHaveURL(baseURL);
 
 });
 
    for (const data of sortingData) {
         test(`Sorting - ${data.sort}`, async ({ page }) => {
-            await page.getByRole('combobox', {name: 'Sort products'}).selectOption(data.sort);
-            const firstProduct = page.locator('.inventory_item_name').first();
-            await expect(firstProduct).toHaveText(data.expectedFirst);
+            const productsPage = new ProductsPage(page);
+            await productsPage.selectSort(data.sort);
+            await expect(productsPage.firstProduct).toHaveText(data.expectedFirst);
 
 });
    }
