@@ -1,4 +1,9 @@
-export const sortCases = [
+export type SortOption = 'az' | 'za' | 'lohi' | 'hilo';
+
+export const sortCases: {
+    option: SortOption;
+    expectedFirstProduct: string;
+}[] = [
     {
         option: 'az',
         expectedFirstProduct: 'Sauce Labs Backpack'
@@ -15,11 +20,4 @@ export const sortCases = [
         option: 'hilo',
         expectedFirstProduct: 'Sauce Labs Fleece Jacket'
     }
-];
-
-export const sortingData = [
-    { sort: 'az', expectedFirst: 'Sauce Labs Backpack' },
-    { sort: 'za', expectedFirst: 'Test.allTheThings() T-Shirt (Red)' },
-    { sort: 'lohi', expectedFirst: 'Sauce Labs Onesie' },
-    { sort: 'hilo', expectedFirst: 'Sauce Labs Fleece Jacket' }
 ];

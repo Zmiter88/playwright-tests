@@ -1,4 +1,5 @@
 import { Page, Locator } from '@playwright/test';
+import { SortOption } from '../test-data/sortData';
 
 export class ProductsPage {
 
@@ -10,8 +11,19 @@ export class ProductsPage {
         this.firstProduct = page.locator('.inventory_item_name').first();
     }
 
-    async selectSort(sort: string) {
+    async openProduct(productName: string) {
+        await this.page.getByText(productName).click();
+    }
+
+    async selectSort(sort: SortOption) {
         await this.sortDropdown.selectOption(sort);
     }
 
+    async addToCart(productName: string) {
+          await this.page
+          .locator('.inventory_item')
+          .filter({hasText: productName})
+          .getByRole('button', {name: 'Add to cart'})
+          .click();
+    }
 }

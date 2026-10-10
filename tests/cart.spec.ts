@@ -1,36 +1,51 @@
 import { test, expect } from "@playwright/test";
 import { validUser } from "../test-data/loginData";
+import { LoginPage } from "../pages/LoginPage";
+import { ProductsPage } from "../pages/ProductsPage";
+import { CartPage } from "../pages/CartPage";
+import { products } from "../test-data/ProductsData";
+import { baseURL } from "../config/config";
+import { Header } from "../pages/Header";
 
 test.describe('Shopping cart', () => {
     // logowanie
   test.beforeEach(async ({ page }) => {
-    await page.goto("https://www.saucedemo.com/");
-    await page.getByPlaceholder("Username").fill(validUser.username);
-    await page.getByPlaceholder("Password").fill(validUser.password);
-    await page.getByRole("button", { name: "Login" }).click();
-    // sprawdzenie czy sie zalogował
+    const loginPage = new LoginPage(page);
+    
+    await loginPage.goto();
+    await loginPage.login(validUser.username, validUser.password);
     await expect(page).toHaveURL(validUser.expected);
     });
-    test(`user can add product to cart`, async ({ page }) => {
-    // Wersja początkowa - bez hierarchicznego locatora
-    // const addBackpackToCart = page.locator('[data-test="add-to-cart-sauce-labs-backpack"]');
-    // await addBackpackToCart.click();
 
-    // Refaktor - najpierw znajdujemy konkretny produkt,
-    // a następnie przycisk znajdujący się w jego obrębie
-    const backpack = page.locator('.inventory_item').filter({hasText: 'Sauce Labs Backpack'})
-    const addBackpackToCart = backpack.getByRole('button', {name: 'Add to cart' })
-    await addBackpackToCart.click();
-    // znalezienie koszyka
-    const cart = page.getByRole('button', {name: 'Cart, 1 items'});
-    // sprawdzenie ze koszyk ma 1 produkt - metoda toHaveAttribute('klucz', 'wartosc')
-    await expect(cart).toHaveAttribute('aria-label', 'Cart, 1 items');
-    // klikniecie koszyka
-    await cart.click();
-    // sprawdzenie ze weszlismy w koszyk
-    await expect(page).toHaveURL('https://www.saucedemo.com/cart.html')
-    // sprawdzenie, że w koszyku jest Sauce Labs Backpack
-    const backpackInCart = page.getByText('Sauce Labs Backpack')
-    await expect(backpackInCart).toHaveText('Sauce Labs Backpack')
+    for (const product of products) {
+    test(`user can add and remove ${product.name} from cart`, async ({ page }) => {
+      const productsPage = new ProductsPage(page);
+      const cartPage = new CartPage(page);
+      const header = new Header(page);
+
+      await productsPage.addToCart(product.name);
+      await header.openCart();
+      await expect(page).toHaveURL(baseURL + 'cart.html');
+      await expect(cartPage.getCartContents()).toContainText(product.name);
+      await cartPage.removeProduct(product.name);
+      await expect(cartPage.getCartContents()).not.toContainText(product.name);
+
 });
+    }
+
+    for (const product of products) {
+    test(`user can add ${product.name} to cart and checkout`, async ({ page }) => {
+      const productsPage = new ProductsPage(page);
+      const cartPage = new CartPage(page);
+      const header = new Header(page);
+
+    await productsPage.addToCart(product.name);
+    await header.openCart();
+    await expect(page).toHaveURL(baseURL + 'cart.html');
+    await expect(cartPage.getCartContents()).toContainText(product.name);
+    await cartPage.checkout();
+    await expect(page).toHaveURL(baseURL + 'checkout-step-one.html');
+
+});
+    }
 });

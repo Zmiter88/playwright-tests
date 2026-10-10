@@ -5,9 +5,11 @@ import { LoginPage } from "../pages/LoginPage";
 const users = [validUser, lockedUser];
 
 test.describe("Login tests", () => {
+
   for (const user of users) {
     test(`login - ${user.username}`, async ({ page }) => {
       const loginPage = new LoginPage(page);
+      
       await loginPage.goto();
       await loginPage.login(user.username, user.password);
 
