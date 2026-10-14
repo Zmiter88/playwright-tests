@@ -1,12 +1,13 @@
 import { test, expect } from "../fixtures";
 import { validUser } from "../test-data/loginData";
-import { ProductsPage } from "../pages/ProductsPage";
 import { SideMenu } from "../pages/SideMenu";
 import { baseURL } from "../config/config";
 import { ProductDetailsPage } from "../pages/ProductDetailsPage";
 import { products } from "../test-data/ProductsData";
 import { CartPage } from "../pages/CartPage";
 import { Header } from "../pages/Header";
+
+test.use({ storageState: 'playwright/.auth/user.json' });
 
 test.describe('Products', () => {
 
