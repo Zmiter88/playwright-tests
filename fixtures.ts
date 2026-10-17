@@ -1,6 +1,4 @@
 import { test as base, expect, Page } from '@playwright/test';
-import { LoginPage } from './pages/LoginPage';
-import { validUser } from './test-data/loginData';
 import { baseURL } from './config/config';
 import { ProductsPage } from './pages/ProductsPage';
 
@@ -12,14 +10,11 @@ type MyFixtures = {
 
 export const test = base.extend<MyFixtures>({
 
-    loggedInPage: async ({ page }, use) => {
-        const loginPage = new LoginPage(page);
-
-        await loginPage.goto();
-        await loginPage.login(validUser.username, validUser.password);
-        await expect(page).toHaveURL(validUser.expected);
-        await use(page);
-    },
+loggedInPage: async ({ page }, use) => {
+    await page.goto(`${baseURL}inventory.html`);
+    await expect(page.locator('.inventory_list')).toBeVisible();
+    await use(page);
+},
 
     appURL: async ({}, use) => {
         await use(baseURL);
