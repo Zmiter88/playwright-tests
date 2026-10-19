@@ -13,10 +13,6 @@ test.describe('Shopping cart', () => {
       const cartPage = new CartPage(loggedInPage);
       const header = new Header(loggedInPage);
 
-      console.log('Current URL:', await loggedInPage.url());
-console.log('Page title:', await loggedInPage.title());
-console.log('Products visible:', await loggedInPage.locator('.inventory_list').isVisible());
-
       await productsPage.addToCart(product.name);
       await header.openCart();
       await expect(loggedInPage).toHaveURL(baseURL + 'cart.html');
