@@ -11,7 +11,7 @@ test('authenticate', async ({ page }) => {
     
     await loginPage.goto();
     await loginPage.login(validUser.username, validUser.password);
-    await expect(page).toHaveURL(validUser.expected);
+    await expect(page).toHaveURL(validUser.expectedURL);
     await expect(page.locator('.inventory_list')).toBeVisible();
 
     await page.context().storageState({ path: authFile });
