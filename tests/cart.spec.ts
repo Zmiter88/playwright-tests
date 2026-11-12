@@ -1,7 +1,7 @@
 import { test, expect } from "../fixtures";
 import { CartPage } from "../pages/CartPage";
 import { products } from "../test-data/ProductsData";
-import { baseURL } from "../config/config";
+import { sauceDemoBaseURL } from "../config/config";
 import { Header } from "../pages/Header";
 
 test.use({ storageState: 'playwright/.auth/user.json' });
@@ -14,10 +14,12 @@ test.describe('Shopping cart', () => {
       const header = new Header(loggedInPage);
 
       await productsPage.addToCart(product.name);
+      await expect (header.cartBadge).toHaveText('1');
       await header.openCart();
-      await expect(loggedInPage).toHaveURL(baseURL + 'cart.html');
+      await expect(loggedInPage).toHaveURL(sauceDemoBaseURL + '/cart.html');
       await expect(cartPage.getCartContents()).toContainText(product.name);
       await cartPage.removeProduct(product.name);
+      await expect (header.cartBadge).toBeHidden();
       await expect(cartPage.getCartContents()).not.toContainText(product.name);
 
 });
@@ -30,10 +32,10 @@ test.describe('Shopping cart', () => {
 
     await productsPage.addToCart(product.name);
     await header.openCart();
-    await expect(loggedInPage).toHaveURL(baseURL + 'cart.html');
+    await expect(loggedInPage).toHaveURL(sauceDemoBaseURL + '/cart.html');
     await expect(cartPage.getCartContents()).toContainText(product.name);
     await cartPage.checkout();
-    await expect(loggedInPage).toHaveURL(baseURL + 'checkout-step-one.html');
+    await expect(loggedInPage).toHaveURL(sauceDemoBaseURL + '/checkout-step-one.html');
 
 });
     }
