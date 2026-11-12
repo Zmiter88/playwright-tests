@@ -1,5 +1,5 @@
 import { Page, Locator } from '@playwright/test';
-import { baseURL } from '../config/config';
+import { sauceDemoBaseURL } from '../config/config';
 
 export class LoginPage {
 
@@ -20,6 +20,6 @@ export class LoginPage {
     }
 
     async goto() {
-    await this.page.goto(baseURL);
+    await this.page.goto(sauceDemoBaseURL);
     }
 }

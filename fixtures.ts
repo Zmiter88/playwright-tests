@@ -1,5 +1,5 @@
 import { test as base, expect, Page } from '@playwright/test';
-import { baseURL } from './config/config';
+import { sauceDemoBaseURL } from './config/config';
 import { ProductsPage } from './pages/ProductsPage';
 
 type MyFixtures = {
@@ -11,13 +11,13 @@ type MyFixtures = {
 export const test = base.extend<MyFixtures>({
 
 loggedInPage: async ({ page }, use) => {
-    await page.goto(`${baseURL}inventory.html`);
+    await page.goto(`${sauceDemoBaseURL}/inventory.html`);
     await expect(page.locator('.inventory_list')).toBeVisible();
     await use(page);
 },
 
     appURL: async ({}, use) => {
-        await use(baseURL);
+        await use(sauceDemoBaseURL);
     },
 
     productsPage: async ({loggedInPage}, use) => {

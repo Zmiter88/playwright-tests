@@ -11,7 +11,7 @@ test.describe("Sorting products", () => {
     
     await loginPage.goto();
     await loginPage.login(validUser.username, validUser.password);
-    await expect(page).toHaveURL(validUser.expected);
+    await expect(page).toHaveURL(validUser.expectedURL);
   });
 
   for (const sortCase of sortCases) {

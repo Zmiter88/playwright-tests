@@ -1,7 +1,7 @@
 import { test, expect } from "../fixtures";
 import { validUser } from "../test-data/loginData";
 import { SideMenu } from "../pages/SideMenu";
-import { baseURL } from "../config/config";
+import { sauceDemoBaseURL } from "../config/config";
 import { ProductDetailsPage } from "../pages/ProductDetailsPage";
 import { products } from "../test-data/ProductsData";
 import { CartPage } from "../pages/CartPage";
@@ -16,7 +16,7 @@ for (const product of products) {
         const productDetailsPage = new ProductDetailsPage(loggedInPage, product.name);
         await productsPage.openProduct(product.name);
         await expect(productDetailsPage.productName).toBeVisible();
-        await expect(loggedInPage).toHaveURL(baseURL + `inventory-item.html?id=${product.id}`);
+        await expect(loggedInPage).toHaveURL(sauceDemoBaseURL + `/inventory-item.html?id=${product.id}`);
         await expect(productDetailsPage.productName).toHaveText(product.name);
     });
 }
@@ -32,7 +32,7 @@ for (const product of products) {
     await header.openCart();
     await expect(cartPage.getCartContents()).toContainText(product.name);
     await cartPage.continueShopping();
-    await expect(loggedInPage).toHaveURL(validUser.expected);
+    await expect(loggedInPage).toHaveURL(validUser.expectedURL);
   });
 }
 
@@ -45,7 +45,7 @@ for (const product of products) {
 
     await productsPage.openProduct(product.name);
     await expect(productDetailsPage.productName).toBeVisible();
-    await expect(loggedInPage).toHaveURL(baseURL + `inventory-item.html?id=${product.id}`);
+    await expect(loggedInPage).toHaveURL(sauceDemoBaseURL + `/inventory-item.html?id=${product.id}`);
     await productDetailsPage.addToCart();
     await header.openCart();
     await expect(cartPage.getCartContents()).toContainText(product.name);
@@ -57,7 +57,7 @@ for (const product of products) {
 
       await sideMenu.logout();
       // sprawdzenie czy sie wylogowalismy
-      await expect(loggedInPage).toHaveURL(baseURL);
+      await expect(loggedInPage).toHaveURL(sauceDemoBaseURL);
 
 });
 });
