@@ -4,7 +4,8 @@ import { defineConfig, devices } from '@playwright/test';
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// import dotenv from 'dotenv';
+ import dotenv from 'dotenv';
+ dotenv.config();
 // import path from 'path';
 // dotenv.config({ path: path.resolve(__dirname, '.env') });
 
@@ -56,6 +57,12 @@ projects: [
     dependencies: ['setup'],
     testIgnore: /auth\.setup\.spec\.ts/,
   },
+  {
+  name: 'mobile-chrome',
+  use: { ...devices['Pixel 7'] },
+  dependencies: ['setup'],
+  testIgnore: /auth\.setup\.spec\.ts/,
+},
 ],
 
   /* Run your local dev server before starting the tests */
