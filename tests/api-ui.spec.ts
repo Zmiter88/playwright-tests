@@ -59,7 +59,7 @@ test('API + UI: display a post', async ({ request, page }) => {
 });
 
 test('API plus UI', async ({request, page}) => {
-    const response = await request.get('https://automationexercise.com/api/productsList');
+    const response = await request.get(`${automationExerciseBaseURL}/api/productsList`);
 
     expect(response.status()).toBe(200);
     const responseBody: ProductsResponse = await response.json();
@@ -68,10 +68,9 @@ test('API plus UI', async ({request, page}) => {
     expect(responseBody.products[0].name).toBe('Blue Top');
     expect(responseBody.products[0].category.category).toBe('Tops');
 
-    await page.goto('https://automationexercise.com/');
-    const consentButton = page.locator('.fc-button-label')
-    .filter({ hasText: /^Consent$/ });  // /^Consent$/ }) ogranicza dopasowanie do elementów, których tekst to dokładnie Consent. Znaki ^ i $ oznaczają początek i koniec tekstu.
-    await consentButton.click();
+    await page.goto(`${automationExerciseBaseURL}`);
+    const cookieConsentHelper = new CookieConsentHelper(page);
+    await cookieConsentHelper.acceptCookies();
     // sekcja wszystkich produktów
     const productsSection = page.locator('.features_items');
     // sekcja pojedynczego produktu, filtrowana po nazwie
@@ -87,7 +86,7 @@ test('API plus UI', async ({request, page}) => {
 });
 
 test('Api plus UI - product details', async ({request, page}) => {
-    const response = await request.get('https://automationexercise.com/api/productsList');
+    const response = await request.get(`${automationExerciseBaseURL}/api/productsList`);
     expect(response.status()).toBe(200);
     const responseBody: ProductsResponse = await response.json();
     const product = responseBody.products[1];
@@ -96,16 +95,15 @@ test('Api plus UI - product details', async ({request, page}) => {
     expect(product.name).toBe('Men Tshirt');
     expect(product.category.category).toBe('Tshirts');
 
-    await page.goto('https://automationexercise.com/')
-    const consentButton = page.locator('.fc-button-label')
-    .filter({ hasText: /^Consent$/ });  
-    await consentButton.click();
+    await page.goto(`${automationExerciseBaseURL}`)
+    const cookieConsentHelper = new CookieConsentHelper(page);
+    await cookieConsentHelper.acceptCookies();
     const productsSection = page.locator('.features_items');
     const productCard = productsSection.locator('.product-image-wrapper')
     .filter({hasText: product.name});
     const viewProductButton = productCard.getByRole('link', {name: 'View Product'});
     await viewProductButton.click();
-    await expect(page).toHaveURL('https://automationexercise.com/product_details/2');
+    await expect(page).toHaveURL(`${automationExerciseBaseURL}/product_details/2`);
     const productInfo = page.locator('.product-information');
     const productName = productInfo.getByRole('heading', {name: product.name});
     await expect(productName).toHaveText(product.name);
@@ -137,7 +135,7 @@ test('API mock - display mocked product', async ({page}) => {
     ]
 };
 
-await page.route('https://automationexercise.com/api/productsList', async route => {
+await page.route(`${automationExerciseBaseURL}/api/productsList`, async route => {
     await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -145,9 +143,11 @@ await page.route('https://automationexercise.com/api/productsList', async route 
     });
 });
 
-await page.goto('https://automationexercise.com/');
+await page.goto(`${automationExerciseBaseURL}`);
+const cookieConsentHelper = new CookieConsentHelper(page);
+await cookieConsentHelper.acceptCookies();
 const result = await page.evaluate(async () => {
-const response = await fetch('https://automationexercise.com/api/productsList');
+const response = await fetch(`${automationExerciseBaseURL}/api/productsList`);
 return await response.json();
 });
 
@@ -229,7 +229,7 @@ test('API mock - displays server error', async ({ page }) => {
         body: JSON.stringify(mockedProducts)
     });
     });
-    await page.goto('https://automationexercise.com/');
+    await page.goto(`${automationExerciseBaseURL}`);
  
 
 const result = await page.evaluate(async () => {
